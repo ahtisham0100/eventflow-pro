@@ -6,13 +6,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { CalendarDays, UserCheck, Briefcase } from 'lucide-react';
+import { CalendarDays, UserCheck, Briefcase, Shield, Headset } from 'lucide-react';
+import { Role } from '@/types';
 
 export default function Signup() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<'attendee' | 'organizer'>('attendee');
+  const [role, setRole] = useState<Role>('attendee');
   const [error, setError] = useState('');
   const { signup } = useAuth();
   const navigate = useNavigate();
@@ -56,28 +57,26 @@ export default function Signup() {
                 <Input id="password" type="password" placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} required />
               </div>
               <div className="space-y-2">
-                <Label>I am an</Label>
+                <Label>I am a</Label>
                 <div className="grid grid-cols-2 gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setRole('attendee')}
-                    className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors ${
-                      role === 'attendee' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground/30'
-                    }`}
-                  >
-                    <UserCheck className={`h-6 w-6 ${role === 'attendee' ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <span className={`text-sm font-medium ${role === 'attendee' ? 'text-primary' : 'text-muted-foreground'}`}>Attendee</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setRole('organizer')}
-                    className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors ${
-                      role === 'organizer' ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground/30'
-                    }`}
-                  >
-                    <Briefcase className={`h-6 w-6 ${role === 'organizer' ? 'text-primary' : 'text-muted-foreground'}`} />
-                    <span className={`text-sm font-medium ${role === 'organizer' ? 'text-primary' : 'text-muted-foreground'}`}>Organizer</span>
-                  </button>
+                  {([
+                    { value: 'attendee' as Role, label: 'Attendee', icon: UserCheck },
+                    { value: 'organizer' as Role, label: 'Organizer', icon: Briefcase },
+                    { value: 'staff' as Role, label: 'Staff', icon: Headset },
+                    { value: 'super_admin' as Role, label: 'Super Admin', icon: Shield },
+                  ]).map(({ value, label, icon: Icon }) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setRole(value)}
+                      className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors ${
+                        role === value ? 'border-primary bg-primary/5' : 'border-border hover:border-muted-foreground/30'
+                      }`}
+                    >
+                      <Icon className={`h-6 w-6 ${role === value ? 'text-primary' : 'text-muted-foreground'}`} />
+                      <span className={`text-sm font-medium ${role === value ? 'text-primary' : 'text-muted-foreground'}`}>{label}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             </CardContent>
