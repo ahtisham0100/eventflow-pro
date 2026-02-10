@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User } from '@/types';
+import { User, Role } from '@/types';
 import { users } from '@/data/mockData';
 
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => { success: boolean; error?: string };
-  signup: (data: { email: string; password: string; name: string; role: 'attendee' | 'organizer' }) => { success: boolean; error?: string };
+  signup: (data: { email: string; password: string; name: string; role: Role }) => { success: boolean; error?: string };
   logout: () => void;
   isAuthenticated: boolean;
 }
@@ -34,7 +34,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return { success: true };
   };
 
-  const signup = (data: { email: string; password: string; name: string; role: 'attendee' | 'organizer' }) => {
+  const signup = (data: { email: string; password: string; name: string; role: Role }) => {
     const exists = users.find(u => u.email === data.email);
     if (exists) return { success: false, error: 'Email already registered' };
     const newUser: User = {
